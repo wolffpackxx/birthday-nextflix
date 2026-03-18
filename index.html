@@ -31,12 +31,25 @@
       display: flex;
       align-items: end;
       padding: 56px 20px 36px;
+      position: relative;
+      overflow: hidden;
+      background: #0f0f0f;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
       background:
         linear-gradient(to top, rgba(20,20,20,1) 10%, rgba(20,20,20,0.45) 52%, rgba(20,20,20,0.1) 100%),
         linear-gradient(to right, rgba(0,0,0,0.88) 8%, rgba(0,0,0,0.35) 42%, rgba(0,0,0,0.08) 72%),
-        url('https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        radial-gradient(circle at top right, rgba(229,9,20,0.18), transparent 28%),
+        linear-gradient(135deg, #141414, #2a2a2a);
+      pointer-events: none;
     }
+    
     .hero-content {
+      position: relative;
+      z-index: 1;
       max-width: 700px;
     }
     .badge {
@@ -124,12 +137,15 @@
     }
     .card.clickable {
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
     .card.clickable:hover {
-      transform: scale(1.03);
+      transform: translateY(-4px) scale(1.03);
       box-shadow: 0 18px 36px rgba(0,0,0,0.42);
       border-color: rgba(255,255,255,0.12);
+    }
+    .card.clickable:hover .thumb-overlay {
+      transform: scale(1.04);
     }
     .thumb {
       aspect-ratio: 16 / 9;
@@ -153,6 +169,30 @@
       padding: 18px;
       align-items: flex-start;
       justify-content: flex-end;
+      overflow: hidden;
+    }
+    .thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(0,0,0,0.9) 8%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.15) 100%),
+        linear-gradient(to right, rgba(0,0,0,0.22), rgba(0,0,0,0));
+      transition: transform 0.35s ease;
+    } {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(0,0,0,0.9) 8%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.15) 100%),
+        linear-gradient(to right, rgba(0,0,0,0.22), rgba(0,0,0,0));
+      transition: transform 0.35s ease;
+    }
+    .thumb-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
     }
     .play-circle {
       width: 62px;
@@ -267,14 +307,6 @@
       .modal { padding: 10px; }
       .title { font-size: 42px; }
     }
-      .hero { min-height: 56vh; padding: 36px 16px 24px; }
-      .meta, .description { font-size: 15px; }
-      .btn { width: 100%; }
-      .section { padding: 10px 16px 28px; }
-      .link-box { margin: 10px 16px 24px; }
-      .play-circle { width: 56px; height: 56px; font-size: 22px; }
-      .modal { padding: 10px; }
-    }
   </style>
 </head>
 <body>
@@ -283,6 +315,7 @@
   </div>
 
   <section class="hero">
+    
     <div class="hero-content">
       <div class="badge">New family release</div>
       <h1 class="title">Isn't She<br>ONE-derful</h1>
@@ -315,8 +348,11 @@
     <div class="row" style="margin-bottom:30px;">
       <div class="card clickable" onclick="openVideo()">
         <div class="thumb small-poster">
-          <div class="play-circle">▶</div>
-          <div>Play Birthday Special</div>
+          <div class="thumb-overlay"></div>
+          <div class="thumb-content">
+            <div class="play-circle">▶</div>
+            <div>Play Birthday Special</div>
+          </div>
         </div>
         <div class="card-body">
           <div class="episode-title">Isn't She ONE-derful</div>
@@ -329,9 +365,12 @@
     <div class="row">
       <div class="card clickable" onclick="openVideo()">
         <div class="thumb small-poster">
-          <div class="play-circle">▶</div>
-          <div>First Birthday</div>
-          <div style="font-size:13px; color:#dcdcdc; font-weight:600;">Birthday Special</div>
+          <div class="thumb-overlay"></div>
+          <div class="thumb-content">
+            <div class="play-circle">▶</div>
+            <div>First Birthday</div>
+            <div style="font-size:13px; color:#dcdcdc; font-weight:600;">Birthday Special</div>
+          </div>
         </div>
         <div class="card-body">
           <div class="episode-title">Episode 1: First Birthday</div>
@@ -355,11 +394,11 @@
         <button class="close-btn" aria-label="Close" onclick="forceCloseVideo()">×</button>
       </div>
       <div class="video-wrap" id="videoWrap"></div>
-      <div class="modal-note">This opens inside the same page instead of a new tab. If Google Drive still blocks playback on some phones, that limitation is coming from Google Drive rather than the page layout.</div>
+      <div class="modal-note">This opens right on the same page in a mobile-friendly popup player. When you add future birthdays, you can keep the same QR code and just add another season.</div>
     </div>
   </div>
   <script>
-    const previewSrc = 'https://www.dropbox.com/scl/fi/6pa3uzkh1obcm34e4lcrb/C3BA2323-96B9-4FAC-9286-BC6381FD6136.mp4?raw=1';
+    const previewSrc = 'https://www.dropbox.com/scl/fi/6pa3uzkh1obcm34e4lcrb/C3BA2323-96B9-4FAC-9286-BC6381FD6136.mp4?rlkey=setr2xzu2qhs3dlytveo4nlkd&st=i69z472m&raw=1';
     const modal = document.getElementById('videoModal');
     const wrap = document.getElementById('videoWrap');
 
