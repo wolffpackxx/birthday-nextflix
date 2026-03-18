@@ -1,450 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nextflix Birthday Preview</title>
-  <style>
-    * { box-sizing: border-box; }
+  <meta charset="UTF-8">
+  <title>WolffLix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style>
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #141414;
+      font-family: Arial, sans-serif;
+      background-color: #141414;
       color: white;
     }
 
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(0,0,0,0.9);
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+    header {
+      background-color: black;
+      padding: 15px 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: red;
     }
 
-    .logo {
-      color: #e50914;
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: 1px;
+    .container {
+      padding: 20px;
     }
 
-    .hero {
-      min-height: 68vh;
-      display: flex;
-      align-items: end;
-      padding: 56px 20px 36px;
-      position: relative;
-      overflow: hidden;
-      background: #0f0f0f;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(to top, rgba(20,20,20,1) 10%, rgba(20,20,20,0.45) 52%, rgba(20,20,20,0.1) 100%),
-        linear-gradient(to right, rgba(0,0,0,0.88) 8%, rgba(0,0,0,0.35) 42%, rgba(0,0,0,0.08) 72%),
-        radial-gradient(circle at top right, rgba(229,9,20,0.18), transparent 28%),
-        linear-gradient(135deg, #141414, #2a2a2a);
-      pointer-events: none;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 700px;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.8px;
-      color: #46d369;
-      margin-bottom: 14px;
-      text-transform: uppercase;
-      padding: 7px 10px;
-      border: 1px solid rgba(70,211,105,0.35);
-      border-radius: 999px;
-      background: rgba(70,211,105,0.08);
-    }
-
-    .title {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-      margin: 0 0 14px;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.45);
-    }
-
-    .title-top {
-      font-size: clamp(24px, 3.2vw, 34px);
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      opacity: 0.96;
-    }
-
-    .title-main {
-      font-size: clamp(44px, 8vw, 84px);
-      line-height: 0.9;
-      font-weight: 900;
-      letter-spacing: -0.03em;
+    h1 {
+      margin-bottom: 5px;
     }
 
     .meta {
+      color: #aaa;
+      margin-bottom: 15px;
+    }
+
+    .video-container {
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 8px;
+    }
+
+    .season {
+      margin-top: 40px;
+    }
+
+    .episode {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
       align-items: center;
-      font-size: 15px;
-      color: #d7d7d7;
-      margin-bottom: 18px;
+      gap: 15px;
+      background-color: #1f1f1f;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .thumbnail {
+      width: 150px;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    .episode-info h3 {
+      margin: 0;
     }
 
     .description {
-      font-size: 18px;
-      line-height: 1.55;
-      color: #f0f0f0;
-      max-width: 620px;
-      margin-bottom: 28px;
+      color: #ccc;
+      margin-top: 5px;
     }
 
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    /* 🔒 Locked Season 2 Styling */
+    .locked-episode {
+      opacity: 0.92;
     }
 
-    .btn {
-      border: 0;
-      border-radius: 6px;
-      padding: 13px 24px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.2s ease;
+    .locked-episode .thumbnail {
+      filter: brightness(0.85);
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-      opacity: 0.96;
-    }
-
-    .btn-play {
-      background: white;
-      color: black;
-    }
-
-    .btn-info {
-      background: rgba(109,109,110,0.7);
-      color: white;
-    }
-
-    .section {
-      padding: 8px 20px 42px;
-    }
-
-    .section h2 {
-      font-size: 26px;
-      margin: 0 0 18px;
-      font-weight: 800;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      align-items: start;
-    }
-
-    .card {
-      background: #1b1b1b;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .card.clickable {
-      cursor: pointer;
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    }
-
-    .card.clickable:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 18px 36px rgba(0,0,0,0.42);
-      border-color: rgba(255,255,255,0.12);
-    }
-
-    .card.clickable:hover .thumb-overlay {
-      transform: scale(1.04);
-    }
-
-    .thumb {
-      aspect-ratio: 16 / 9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 42px;
-      background: linear-gradient(135deg, #2b2b2b, #3c3c3c);
-      color: rgba(255,255,255,0.92);
-    }
-
-    .thumb.small-poster {
-      position: relative;
-      background:
-        linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.18)),
-        radial-gradient(circle at top right, rgba(229,9,20,0.28), transparent 30%),
-        linear-gradient(135deg, #1c1c1c, #3b3b3b);
-      font-size: 20px;
-      font-weight: 700;
-      flex-direction: column;
-      gap: 10px;
-      padding: 18px;
-      align-items: flex-start;
-      justify-content: flex-end;
-      overflow: hidden;
-    }
-
-    .thumb-overlay {
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(to top, rgba(0,0,0,0.9) 8%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.15) 100%),
-        linear-gradient(to right, rgba(0,0,0,0.22), rgba(0,0,0,0));
-      transition: transform 0.35s ease;
-    }
-
-    .thumb-content {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .play-circle {
-      width: 62px;
-      height: 62px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.95);
-      color: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      font-weight: 800;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.28);
-    }
-
-    .card-body {
-      padding: 15px;
-    }
-
-    .episode-title {
-      font-size: 17px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .episode-text {
-      color: #cfcfcf;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.88);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 50;
-    }
-
-    .modal.open {
-      display: flex;
-    }
-
-    .modal-panel {
-      width: min(100%, 980px);
-      background: #101010;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.56);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .modal-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: #181818;
-    }
-
-    .modal-title {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .close-btn {
-      background: transparent;
-      color: white;
-      border: 0;
-      font-size: 28px;
-      line-height: 1;
-      cursor: pointer;
-    }
-
-    .video-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: black;
-    }
-
-    .video-wrap video {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: black;
-    }
-
-    .modal-note {
-      padding: 12px 14px 16px;
-      color: #cfcfcf;
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    @media (max-width: 640px) {
-      .logo { font-size: 26px; }
-      .hero { min-height: 58vh; padding: 38px 16px 24px; }
-      .meta, .description { font-size: 15px; }
-      .meta { gap: 8px; }
-      .btn { width: 100%; }
-      .section { padding: 8px 16px 30px; }
-      .play-circle { width: 54px; height: 54px; font-size: 20px; }
-      .modal { padding: 10px; }
-      .title-main { font-size: 52px; }
-      .title-top { font-size: 22px; }
+    .locked-episode:hover .thumbnail {
+      transform: scale(1.03);
+      transition: transform 0.3s ease;
     }
   </style>
 </head>
+
 <body>
-  <div class="topbar">
-    <div class="logo">NEXTFLIX</div>
+
+<header>WolffLix</header>
+
+<div class="container">
+
+  <h1>Cami’s First Birthday</h1>
+  <p class="meta">2026 • 1 Season • Family</p>
+
+  <p>
+    A look back at Cami’s first year—capturing the moments that made it unforgettable.
+  </p>
+
+  <!-- 🎥 VIDEO PLAYER -->
+  <div class="video-container">
+    <video controls>
+      <source src="YOUR_VIDEO_LINK_HERE.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </div>
 
-  <section class="hero">
-    <div class="hero-content">
-      <div class="badge">New family release</div>
-      <h1 class="title">
-        <span class="title-top">Isn't She</span>
-        <span class="title-main">ONE-derful</span>
-      </h1>
-
-      <div class="meta">
-        <span>2026</span>
-        <span>•</span>
-        <span>2m 38s</span>
-        <span>•</span>
-        <span>Family</span>
-        <span>•</span>
-        <span>First Year Special</span>
-      </div>
-
-      <div class="description">
-        Every moment tells a story. Experience Cami’s first year of life—capturing the memories, milestones, and moments that led to her first birthday.
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-play" onclick="openVideo()">▶ Play</button>
-        <button class="btn btn-info" onclick="document.getElementById('season1').scrollIntoView({behavior:'smooth'})">More Info</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="season1">
+  <!-- 🎬 SEASON 1 -->
+  <div class="season">
     <h2>Season 1</h2>
-    <div class="row">
-      <div class="card clickable" onclick="openVideo()">
-        <div
-          class="thumb small-poster"
-          style="background-image: linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.18)), url('cami-thumbnail.jpg'); background-size: 120% auto; background-position: center 40%;"
-        >
-          <div class="thumb-overlay"></div>
-          <div class="thumb-content">
-            <div class="play-circle">▶</div>
-            <div>Cami's First Birthday</div>
-            <div style="font-size:13px; color:#dcdcdc; font-weight:600;">Birthday Special</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="episode-title">Episode 1: Cami's First Birthday</div>
-          <div class="episode-text">Tap to open the birthday video on the same page.</div>
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="thumb" style="background:linear-gradient(135deg,#181818,#2e2e2e); font-size:64px; font-weight:300;">+</div>
-        <div class="card-body">
-          <div class="episode-title">Season 2 Coming Later</div>
-          <div class="episode-text">This slot is already ready for next year, so the same QR code can keep working as new seasons get added.</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <div class="episode">
+      <img src="thumbnail.jpg" alt="Episode Thumbnail" class="thumbnail">
 
-  <div class="modal" id="videoModal" onclick="closeVideo(event)">
-    <div class="modal-panel">
-      <div class="modal-top">
-        <div class="modal-title">Season 1 • Episode 1</div>
-        <button class="close-btn" aria-label="Close" onclick="forceCloseVideo()">×</button>
+      <div class="episode-info">
+        <h3>Episode 1 – Cami’s First Birthday</h3>
+        <p class="meta">2m 38s</p>
+        <p class="description">
+          Tap play above to watch the birthday video.
+        </p>
       </div>
-      <div class="video-wrap" id="videoWrap"></div>
-      <div class="modal-note">This opens right on the same page in a mobile-friendly popup player. When you add future birthdays, you can keep the same QR code and just add another season.</div>
     </div>
   </div>
 
-  <script>
-    const previewSrc = 'https://www.dropbox.com/scl/fi/6pa3uzkh1obcm34e4lcrb/C3BA2323-96B9-4FAC-9286-BC6381FD6136.mp4?rlkey=setr2xzu2qhs3dlytveo4nlkd&st=i69z472m&raw=1';
-    const modal = document.getElementById('videoModal');
-    const wrap = document.getElementById('videoWrap');
+  <!-- 🔥 SEASON 2 -->
+  <div class="season">
+    <h2>Season 2</h2>
 
-    function openVideo() {
-      wrap.innerHTML = '<video controls autoplay><source src="' + previewSrc + '" type="video/mp4"></video>';
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
+    <div class="episode locked-episode">
+      <img src="season2.png" alt="Season 2 Coming Soon" class="thumbnail">
 
-    function forceCloseVideo() {
-      modal.classList.remove('open');
-      wrap.innerHTML = '';
-      document.body.style.overflow = '';
-    }
+      <div class="episode-info">
+        <h3>Episode 1 – The Next Chapter</h3>
+        <p class="meta">Coming March 24, 2027 • 🔒 Locked</p>
+        <p class="description">
+          Cami’s journey continues as new memories begin to unfold.
+        </p>
+      </div>
+    </div>
+  </div>
 
-    function closeVideo(event) {
-      if (event.target === modal) {
-        forceCloseVideo();
-      }
-    }
+</div>
 
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') {
-        forceCloseVideo();
-      }
-    });
-  </script>
 </body>
 </html>
